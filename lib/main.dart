@@ -1,95 +1,132 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'moisture_page.dart';
+import 'temperature_page.dart';
+import 'light_page.dart';
+
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+  @override
+  MainAppState createState() => MainAppState();
+}
+
+class MainAppState extends State<MainApp> {
+  int _pageIndex = 0;
+
+  final List<Widget> _pages = [
+    const MoisturePage(),
+    const TemperaturePage(),
+    const LightPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 231, 248, 232),
         appBar: AppBar(
-          leading: const Icon(Icons.energy_savings_leaf, color: Colors.white),
-          title: const Text('Plant Health Monitoring App',
-          style: TextStyle(color: Colors.white),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.menu, color: Colors.white),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
           ),
+          title: const Text('Plant Health Monitoring App', style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.green,
         ),
-          body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:[
-              Text(
-                'Moisture Level', // Replace with the actual percentage text
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
-              ),
-              SizedBox(height: 30),
-              SizedBox(
-                width: 200, // Set the width to make it bigger
-                height: 200, // Set the height to make it bigger
-                child: Stack(
-                  children: <Widget>[
-                    Center(
-                      child: SizedBox(
-                        width: 200, // Set the width of CircularProgressIndicator
-                        height: 200, // Set the height of CircularProgressIndicator
-                        child: CircularProgressIndicator(
-                          value: .3, // Replace with the actual percentage value
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                          backgroundColor: Colors.white,
-                          strokeWidth: 10,
-                          strokeCap: StrokeCap.round
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        '30%', // Replace with the actual percentage text
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
-                      ),
-                    ),
-                  ],
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.green,
                 ),
+                child: Text(
+                  'Settings',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                title: const Text('About Us'),
+                leading: const Icon(Icons.info),
+                onTap: () {
+                  // Add your about us functionality here
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Exit'),
+                leading: const Icon(Icons.exit_to_app),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
         ),
+        body: _pages[_pageIndex],
+
         bottomNavigationBar: Container(
           color: Colors.green,
-          child:  const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 18),
-            child:  GNav(
-              backgroundColor: Colors.green,
-              color: Colors.white,
-              activeColor: Colors.green,
-              tabBackgroundColor: Colors.white,
-              padding: EdgeInsets.all(16),
-              gap: 8,
-              tabs:  [
-                GButton(
-                  icon: Icons.water_drop_outlined,
-                  text: 'Moisture'
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+            child: GNav(
+                backgroundColor: Colors.green,
+                color: Colors.white,
+                activeColor: Colors.green,
+                tabBackgroundColor: Colors.white,
+                padding: const EdgeInsets.all(16),
+                gap: 8,
+                tabs: [
+                  GButton(
+                    icon: Icons.water_drop_outlined,
+                    text: 'Moisture',
+                    onPressed: () {
+                      setState(() {
+                        _pageIndex = 0;
+                      });
+                    },
                   ),
-                GButton(
-                  icon: Icons.thermostat,
-                  text: 'Temperature'
+                  GButton(
+                    icon: Icons.thermostat,
+                    text: 'Temperature',
+                    onPressed: () {
+                      setState(() {
+                        _pageIndex = 1;
+                      });
+                    },
                   ),
-                GButton(
-                 //light icon
-                 icon: Icons.sunny_snowing,
-                  text: 'Light'
-                ),
-              ]
-            ),
+                  GButton(
+                    icon: Icons.sunny_snowing,
+                    text: 'Light',
+                    onPressed: () {
+                      setState(() {
+                        _pageIndex = 2;
+                      });
+                    },
+                  ),
+                ]),
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.rotate_left_rounded, color: Colors.white),
+        ),
       ),
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false
     );
   }
 }
