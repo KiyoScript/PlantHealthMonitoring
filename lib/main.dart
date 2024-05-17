@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'moisture_page.dart';
 import 'temperature_page.dart';
 import 'light_page.dart';
 
-
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+  String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+  String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
+  await Supabase.initialize(url: supabaseUrl,anonKey: supabaseKey);
   runApp(const MainApp());
 }
 
+
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
   @override
   MainAppState createState() => MainAppState();
 }
@@ -121,7 +129,9 @@ class MainAppState extends State<MainApp> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+
+          },
           backgroundColor: Colors.green,
           child: const Icon(Icons.rotate_left_rounded, color: Colors.white),
         ),
@@ -130,3 +140,4 @@ class MainAppState extends State<MainApp> {
     );
   }
 }
+
