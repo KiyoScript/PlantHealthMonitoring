@@ -35,62 +35,44 @@ class MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(scaffoldBackgroundColor: const Color.fromARGB(255, 232, 250, 232)),
       home: Scaffold(
         appBar: AppBar(
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.menu, color: Colors.white),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              );
-            },
-          ),
-          title: const Text('Plant Health Monitoring App', style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.green,
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                ),
-                child: Text(
-                  'Settings',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              ListTile(
-                title: const Text('About Us'),
-                leading: const Icon(Icons.info),
-                onTap: () {
-                  // Add your about us functionality here
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Exit'),
-                leading: const Icon(Icons.exit_to_app),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
+          title: const Text('Plant Health Monitoring App', style: TextStyle(color: Colors.green)),
+          leading: Image.asset('assets/logo.png'),
+          titleSpacing: 16.0,
+          backgroundColor: const Color.fromARGB(255, 232, 250, 232),
+          actions: <Widget>[
+            IconButton(
+              color: Colors.green,
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+              },
+            ),
+            IconButton(
+              color: Colors.green,
+              icon: const Icon(Icons.notifications),
+              onPressed: () {
+              },
+            ),
+          ],
         ),
         body: _pages[_pageIndex],
 
-        bottomNavigationBar: Container(
-          color: Colors.green,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: GNav(
+        bottomNavigationBar: ClipRect(
+          clipBehavior: Clip.antiAlias,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              boxShadow: [BoxShadow(color: Colors.green, spreadRadius: 0, blurRadius: 20)],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+              child: GNav(
                 backgroundColor: Colors.green,
                 color: Colors.white,
                 activeColor: Colors.green,
@@ -99,7 +81,7 @@ class MainAppState extends State<MainApp> {
                 gap: 8,
                 tabs: [
                   GButton(
-                    icon: Icons.water_drop_outlined,
+                    icon: Icons.water_drop_sharp,
                     text: 'Moisture',
                     onPressed: () {
                       setState(() {
@@ -108,7 +90,7 @@ class MainAppState extends State<MainApp> {
                     },
                   ),
                   GButton(
-                    icon: Icons.thermostat,
+                    icon: Icons.thermostat_sharp,
                     text: 'Temperature',
                     onPressed: () {
                       setState(() {
@@ -125,16 +107,26 @@ class MainAppState extends State<MainApp> {
                       });
                     },
                   ),
-                ]),
+                  GButton(
+                    icon: Icons.history,
+                    text: 'History',
+                    onPressed: () {
+                      setState(() {
+                        _pageIndex = 3;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-
-          },
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.rotate_left_rounded, color: Colors.white),
-        ),
+      //   floatingActionButton: FloatingActionButton(
+      //     onPressed: () {
+      //     },
+      //     backgroundColor: Colors.green,
+      //     child: const Icon(Icons.rotate_left_rounded, color: Colors.white),
+      //   ),
       ),
       debugShowCheckedModeBanner: false
     );
