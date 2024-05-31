@@ -10,88 +10,99 @@ class MoisturePage extends StatefulWidget {
 }
 
 class _MoisturePageState extends State<MoisturePage> {
-  final _future = Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false).limit(1);
+  final _moistures =
+      Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _future,
+        future: _moistures,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
           final moistures = snapshot.data!;
+
           return Center(
-            child:
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(image: Svg(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: Svg(
                     'assets/gardening.svg',
                   ),
-                alignment: Alignment.bottomCenter,
+                  alignment: Alignment.bottomCenter,
                 ),
               ),
-                child: Center(
-                  child: ListView.builder(
-                    itemCount: moistures.length,
-                    itemBuilder: ((context, index) {
-                      final moisture = moistures[index];
-                      final double moistureLevel = moisture['Mlevel'] / 100.0;
+              child: Center(
 
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 5),
-                            Text(
+                child: ListView.builder(
+                  itemCount: moistures.length,
+                  itemBuilder: ((context, index) {
+                    final moisture = moistures[index];
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 3,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              title: Text(
                                 moisture['Mlevel'] < 30.0 ? 'Low Moisture Level' : 'Moisture Level',
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green
+                                  color: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
                                 ),
                               ),
-                            const SizedBox(height: 30),
-                            SizedBox(
-                              width: 200,
-                              height: 200,
-                              child: Stack(
-                                children: <Widget>[
-                                  Center(
-                                    child: SizedBox(
-                                      width: 200,
-                                      height: 200,
-                                      child: CircularProgressIndicator(
-                                        value: moistureLevel, // Set the value here
-                                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-                                        backgroundColor: const Color.fromARGB(255, 174, 185, 174),
-                                        strokeWidth: 10,
-                                        strokeCap: StrokeCap.round,
-                                      ),
+                              subtitle: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${moisture['Mlevel']}%',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
-                                  Center(
-                                    child: Text(
-                                      '${moisture['Mlevel']}%',
-                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+                                  Text(
+                                    '${moisture['created_at']}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],
                               ),
+                              leading: Icon(
+                                moisture['Mlevel'] < 30.0 ? Icons.warning : Icons.water_drop,
+                                color: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
+                              ),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
                 ),
               ),
+            ),
           );
         },
       ),

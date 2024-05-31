@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dashboard_page.dart';
 import 'moisture_page.dart';
 import 'temperature_page.dart';
 import 'light_page.dart';
@@ -27,6 +28,7 @@ class MainAppState extends State<MainApp> {
   int _pageIndex = 0;
 
   final List<Widget> _pages = [
+    const DashboardPage(),
     const MoisturePage(),
     const TemperaturePage(),
     const LightPage(),
@@ -46,12 +48,6 @@ class MainAppState extends State<MainApp> {
             IconButton(
               color: Colors.green,
               icon: const Icon(Icons.settings),
-              onPressed: () {
-              },
-            ),
-            IconButton(
-              color: Colors.green,
-              icon: const Icon(Icons.notifications),
               onPressed: () {
               },
             ),
@@ -81,11 +77,20 @@ class MainAppState extends State<MainApp> {
                 gap: 8,
                 tabs: [
                   GButton(
+                    icon: Icons.dashboard_sharp,
+                    text: 'Dashboard',
+                    onPressed: () {
+                      setState(() {
+                        _pageIndex = 0;
+                      });
+                    },
+                  ),
+                  GButton(
                     icon: Icons.water_drop_sharp,
                     text: 'Moisture',
                     onPressed: () {
                       setState(() {
-                        _pageIndex = 0;
+                        _pageIndex = 1;
                       });
                     },
                   ),
@@ -94,22 +99,13 @@ class MainAppState extends State<MainApp> {
                     text: 'Temperature',
                     onPressed: () {
                       setState(() {
-                        _pageIndex = 1;
+                        _pageIndex = 2;
                       });
                     },
                   ),
                   GButton(
                     icon: Icons.sunny_snowing,
                     text: 'Light',
-                    onPressed: () {
-                      setState(() {
-                        _pageIndex = 2;
-                      });
-                    },
-                  ),
-                  GButton(
-                    icon: Icons.history,
-                    text: 'History',
                     onPressed: () {
                       setState(() {
                         _pageIndex = 3;

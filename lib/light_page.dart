@@ -10,83 +10,112 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  final _future = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false).limit(1);
+  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _future,
+        future: _lights,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
           final lights = snapshot.data!;
+
           return Center(
-            child:
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(image: Svg(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: Svg(
                     'assets/gardening.svg',
                   ),
-                alignment: Alignment.bottomLeft,
+                  alignment: Alignment.bottomCenter,
                 ),
               ),
-                child: Center(
-                  child: ListView.builder(
-                    itemCount: lights.length,
-                    itemBuilder: ((context, index) {
-                      final light = lights[index];
-                      final double lightLevel = light['Llevel'] / 100.0;
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 60),
-                            const SizedBox(height: 5),
-                            const Text(
-                              'Light Level',
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+              child: Center(
+                child: ListView.builder(
+                  itemCount: lights.length,
+                  itemBuilder: ((context, index) {
+                    final light = lights[index];
+                    final double lightLevel = light['Llevel'];
+
+                    IconData iconData;
+                    Color iconColor;
+                    String title;
+
+                    if (lightLevel < 500.0) {
+                      iconData = Icons.warning;
+                      iconColor = Colors.red;
+                      title = 'Low Light Level';
+                    } else {
+                      iconData = Icons.lightbulb_outline;
+                      iconColor = Colors.green;
+                      title = 'Light Level';
+                    }
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 3,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 30),
-                            SizedBox(
-                              width: 200,
-                              height: 200,
-                              child: Stack(
-                                children: <Widget>[
-                                  Center(
-                                    child: SizedBox(
-                                      width: 200,
-                                      height: 200,
-                                      child: CircularProgressIndicator(
-                                        value: lightLevel, // Set the value here
-                                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-                                        backgroundColor: const Color.fromARGB(255, 174, 185, 174),
-                                        strokeWidth: 10,
-                                        strokeCap: StrokeCap.round,
-                                      ),
+                            child: ListTile(
+                              title: Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: iconColor,
+                                ),
+                              ),
+                              subtitle: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${lightLevel.toStringAsFixed(2)} lx',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
-                                  Center(
-                                    child: Text(
-                                      '${light['Llevel']}%',
-                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+                                  Text(
+                                    '${light['created_at']}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],
                               ),
+                              leading: Icon(
+                                iconData,
+                                color: iconColor,
+                              ),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
                 ),
               ),
+            ),
           );
         },
       ),
