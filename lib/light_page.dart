@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:intl/intl.dart';
 
 class LightPage extends StatefulWidget {
   const LightPage({super.key});
@@ -41,6 +42,8 @@ class _LightPageState extends State<LightPage> {
                   itemBuilder: ((context, index) {
                     final light = lights[index];
                     final double lightLevel = light['Llevel'];
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']));
+
 
                     IconData iconData;
                     Color iconColor;
@@ -95,7 +98,7 @@ class _LightPageState extends State<LightPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${light['created_at']}',
+                                    formattedDateTime,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black,

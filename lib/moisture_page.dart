@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:intl/intl.dart';
 
 class MoisturePage extends StatefulWidget {
   const MoisturePage({super.key});
@@ -10,8 +11,7 @@ class MoisturePage extends StatefulWidget {
 }
 
 class _MoisturePageState extends State<MoisturePage> {
-  final _moistures =
-      Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false);
+  final _moistures = Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +37,11 @@ class _MoisturePageState extends State<MoisturePage> {
                 ),
               ),
               child: Center(
-
                 child: ListView.builder(
                   itemCount: moistures.length,
                   itemBuilder: ((context, index) {
                     final moisture = moistures[index];
-
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']));
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -82,7 +81,7 @@ class _MoisturePageState extends State<MoisturePage> {
                                     ),
                                   ),
                                   Text(
-                                    '${moisture['created_at']}',
+                                    formattedDateTime,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black,

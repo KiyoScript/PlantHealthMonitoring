@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:intl/intl.dart';
 
 class TemperaturePage extends StatefulWidget {
   const TemperaturePage({super.key});
@@ -45,12 +46,12 @@ class _TemperaturePageState extends State<TemperaturePage> {
                     final item = data[index];
                     final double temperatureLevel = item['Tlevel'];
                     final double humidityLevel = item['Hlevel'];
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(item['created_at']));
 
                     IconData iconData;
                     Color iconColor;
                     String title;
 
-                    // Adjusting the title and icon based on temperature level
                     if (temperatureLevel < 15.0) {
                       iconData = Icons.ac_unit;
                       iconColor = Colors.blue;
@@ -104,7 +105,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
                                     ),
                                   ),
                                   Text(
-                                    '${item['created_at']}',
+                                    formattedDateTime,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black,
