@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -65,24 +66,28 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   _buildContainer(
                     title: 'Moisture Level',
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at'])),
                     value: '${moisture['Mlevel']}%',
                     valueColor: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
                     circularValue: moisture['Mlevel'] / 100.0,
                   ),
                   _buildContainer(
                     title: 'Light Level',
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at'])),
                     value: '${light['Llevel']} lx',
                     valueColor: light['Llevel'] < 300 ? Colors.red : Colors.green,
                     circularValue: light['Llevel'] / 1000.0,
                   ),
                   _buildContainer(
                     title: 'Temperature Level',
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(temperature['created_at'])),
                     value: '${temperature['Tlevel']}°C',
                     valueColor: temperature['Tlevel'] < 30 ? Colors.blue : Colors.red,
                     circularValue: temperature['Tlevel'] / 100.0,
                   ),
                   _buildContainer(
                     title: 'Humidity Level',
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(humidity['created_at'])),
                     value: '${humidity['Hlevel']}%',
                     valueColor: humidity['Hlevel'] < 50 ? Colors.red : Colors.green,
                     circularValue: humidity['Hlevel'] / 100.0,
@@ -96,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildContainer({required String title, required String value, required Color valueColor, required double circularValue}) {
+  Widget _buildContainer({required String title,required String time, required String value, required Color valueColor, required double circularValue}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -122,7 +127,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
           Expanded(
             child: SizedBox(
               width: 70,
@@ -147,6 +152,15 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
             ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            time,
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.green,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
