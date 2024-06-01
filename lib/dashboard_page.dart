@@ -39,7 +39,7 @@ class _DashboardPageState extends State<DashboardPage> {
         future: _fetchData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
           }
           final data = snapshot.data!;
           final moisture = data[0].isNotEmpty ? data[0][0] : {'Mlevel': 0};
@@ -99,7 +99,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildContainer({required String title, required String value, required Color valueColor, required double circularValue}) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 193, 221, 194),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -118,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
             title,
             style: const TextStyle(
               fontSize: 16,
-              color: Colors.white,
+              color: Colors.green,
             ),
             textAlign: TextAlign.center,
           ),
@@ -134,7 +134,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   CircularProgressIndicator(
                     value: circularValue,
                     valueColor: AlwaysStoppedAnimation<Color>(valueColor),
-                    backgroundColor: Colors.white,
+                    backgroundColor: const Color.fromARGB(255, 189, 234, 191),
                     strokeWidth: 10,
                     strokeCap: StrokeCap.round,
                   ),

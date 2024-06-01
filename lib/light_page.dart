@@ -11,7 +11,7 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false);
+  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false).limit(15);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _LightPageState extends State<LightPage> {
         future: _lights,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
           }
           final lights = snapshot.data!;
 

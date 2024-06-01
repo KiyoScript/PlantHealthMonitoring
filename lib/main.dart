@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -6,6 +8,7 @@ import 'dashboard_page.dart';
 import 'moisture_page.dart';
 import 'temperature_page.dart';
 import 'light_page.dart';
+import 'about_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +19,6 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
@@ -26,6 +28,7 @@ class MainApp extends StatefulWidget {
 
 class MainAppState extends State<MainApp> {
   int _pageIndex = 0;
+  bool _isLoading = false;
 
   final List<Widget> _pages = [
     const DashboardPage(),
@@ -33,6 +36,35 @@ class MainAppState extends State<MainApp> {
     const TemperaturePage(),
     const LightPage(),
   ];
+
+  void _refreshPage() {
+    setState(() {
+      _isLoading = true;
+    });
+
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        switch (_pageIndex) {
+          case 0:
+            _pages[0] = const DashboardPage();
+            break;
+          case 1:
+            _pageIndex = 1;
+            break;
+          case 2:
+            _pageIndex = 2;
+            break;
+          case 3:
+            _pageIndex = 3;
+            break;
+          default:
+            _pageIndex = 0;
+            break;
+        }
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +77,23 @@ class MainAppState extends State<MainApp> {
           titleSpacing: 16.0,
           backgroundColor: const Color.fromARGB(255, 232, 250, 232),
           actions: <Widget>[
-            IconButton(
-              color: Colors.green,
-              icon: const Icon(Icons.settings),
-              onPressed: () {
+            Builder(
+              builder: (BuildContext context) {
+                return IconButton(
+                  color: Colors.green,
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AboutPage()),
+                    );
+                  },
+                );
               },
             ),
           ],
         ),
-        body: _pages[_pageIndex],
-
+        body: _isLoading ? const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green )) : _pages[_pageIndex],
         bottomNavigationBar: ClipRect(
           clipBehavior: Clip.antiAlias,
           child: Container(
@@ -117,15 +156,13 @@ class MainAppState extends State<MainApp> {
             ),
           ),
         ),
-      //   floatingActionButton: FloatingActionButton(
-      //     onPressed: () {
-      //     },
-      //     backgroundColor: Colors.green,
-      //     child: const Icon(Icons.rotate_left_rounded, color: Colors.white),
-      //   ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _refreshPage,
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.refresh, color: Colors.white),
+        ),
       ),
-      debugShowCheckedModeBanner: false
+      debugShowCheckedModeBanner: false,
     );
   }
 }
-

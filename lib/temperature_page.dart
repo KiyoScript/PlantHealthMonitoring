@@ -11,10 +11,7 @@ class TemperaturePage extends StatefulWidget {
 }
 
 class _TemperaturePageState extends State<TemperaturePage> {
-  final _temphumid = Supabase.instance.client
-      .from('TempHumidLevel')
-      .select()
-      .order('id', ascending: false);
+  final _temphumid = Supabase.instance.client.from('TempHumidLevel').select().order('id', ascending: false).limit(15);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +20,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
         future: _temphumid,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
           }
           final data = snapshot.data!;
 
