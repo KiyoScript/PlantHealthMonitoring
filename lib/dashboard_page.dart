@@ -78,7 +78,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   _buildContainer(
                     title: 'Temperature Level',
                     value: '${temperature['Tlevel']}°C',
-                    valueColor: temperature['Tlevel'] < 50 ? Colors.red : Colors.green,
+                    valueColor: temperature['Tlevel'] < 30 ? Colors.blue : Colors.red,
                     circularValue: temperature['Tlevel'] / 100.0,
                   ),
                   _buildContainer(

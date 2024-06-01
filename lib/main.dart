@@ -36,35 +36,6 @@ class MainAppState extends State<MainApp> {
     const LightPage(),
   ];
 
-  void _refreshPage() {
-    setState(() {
-      _isLoading = true;
-    });
-
-    Timer(const Duration(seconds: 1), () {
-      setState(() {
-        switch (_pageIndex) {
-          case 0:
-            _pages[0] = const DashboardPage();
-            break;
-          case 1:
-            _pageIndex = 1;
-            break;
-          case 2:
-            _pageIndex = 2;
-            break;
-          case 3:
-            _pageIndex = 3;
-            break;
-          default:
-            _pageIndex = 0;
-            break;
-        }
-        _isLoading = false;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -154,11 +125,6 @@ class MainAppState extends State<MainApp> {
               ),
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _refreshPage,
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.refresh, color: Colors.white),
         ),
       ),
       debugShowCheckedModeBanner: false,
