@@ -41,8 +41,8 @@ class _TemperaturePageState extends State<TemperaturePage> {
                   itemCount: data.length,
                   itemBuilder: ((context, index) {
                     final item = data[index];
-                    final double temperatureLevel = item['Tlevel'];
-                    final double humidityLevel = item['Hlevel'];
+                    final temperatureLevel = item['Tlevel'];
+                    final humidityLevel = item['Hlevel'];
                     String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(item['created_at']));
 
                     IconData iconData;
