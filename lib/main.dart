@@ -27,7 +27,7 @@ class MainApp extends StatefulWidget {
 
 class MainAppState extends State<MainApp> {
   int _pageIndex = 0;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   final List<Widget> _pages = [
     const DashboardPage(),
