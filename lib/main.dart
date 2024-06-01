@@ -80,7 +80,7 @@ class MainAppState extends State<MainApp> {
               builder: (BuildContext context) {
                 return IconButton(
                   color: Colors.green,
-                  icon: const Icon(Icons.settings),
+                  icon: const Icon(Icons.question_mark_rounded),
                   onPressed: () {
                     Navigator.push(
                       context,

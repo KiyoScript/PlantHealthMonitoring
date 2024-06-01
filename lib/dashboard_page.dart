@@ -125,7 +125,7 @@ class _DashboardPageState extends State<DashboardPage> {
           const SizedBox(height: 30),
           Expanded(
             child: SizedBox(
-              width: 150,
+              width: 70,
               height: double.infinity,
               child: Stack(
                 fit: StackFit.expand,
