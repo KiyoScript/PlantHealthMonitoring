@@ -42,7 +42,7 @@ class _LightPageState extends State<LightPage> {
                   itemBuilder: ((context, index) {
                     final light = lights[index];
                     final lightLevel = light['Llevel'];
-                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']));
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']).toLocal());
 
 
                     IconData iconData;

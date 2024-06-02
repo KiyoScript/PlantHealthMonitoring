@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -48,6 +49,15 @@ class _DashboardPageState extends State<DashboardPage> {
           final temperature = data[2].isNotEmpty ? data[2][0] : {'Tlevel': 0};
           final humidity = data[2].isNotEmpty ? data[2][0] : {'Hlevel': 0};
 
+
+          // print('==================================================================================');
+          // print('====================================Debug Session=================================');
+          // print('==================================================================================');
+          // print(moisture['created_at']);
+          // print(DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']).toLocal()));
+          // print('==================================================================================');
+          // print('==================================================================================');
+
           return Center(
             child: Container(
               width: double.infinity,
@@ -66,28 +76,28 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   _buildContainer(
                     title: 'Moisture Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at'])),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']).toLocal()),
                     value: '${moisture['Mlevel']}%',
                     valueColor: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
                     circularValue: moisture['Mlevel'] / 100.0,
                   ),
                   _buildContainer(
                     title: 'Light Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at'])),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']).toLocal()),
                     value: '${light['Llevel']} lx',
                     valueColor: light['Llevel'] < 300 ? Colors.red : Colors.green,
                     circularValue: light['Llevel'] / 1000.0,
                   ),
                   _buildContainer(
                     title: 'Temperature Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(temperature['created_at'])),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(temperature['created_at']).toLocal()),
                     value: '${temperature['Tlevel']}°C',
                     valueColor: temperature['Tlevel'] < 30 ? Colors.blue : Colors.red,
                     circularValue: temperature['Tlevel'] / 100.0,
                   ),
                   _buildContainer(
                     title: 'Humidity Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(humidity['created_at'])),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(humidity['created_at']).toLocal()),
                     value: '${humidity['Hlevel']}%',
                     valueColor: humidity['Hlevel'] < 50 ? Colors.red : Colors.green,
                     circularValue: humidity['Hlevel'] / 100.0,
@@ -127,10 +137,10 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           Expanded(
             child: SizedBox(
-              width: 70,
+              width: 80,
               height: double.infinity,
               child: Stack(
                 fit: StackFit.expand,
@@ -153,7 +163,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           Text(
             time,
             style: const TextStyle(

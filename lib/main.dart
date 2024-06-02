@@ -105,7 +105,7 @@ class MainAppState extends State<MainApp> {
                   ),
                   GButton(
                     icon: Icons.thermostat_sharp,
-                    text: 'Temperature',
+                    text: 'Temp/Humidity',
                     onPressed: () {
                       setState(() {
                         _pageIndex = 2;

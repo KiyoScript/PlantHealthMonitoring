@@ -41,7 +41,7 @@ class _MoisturePageState extends State<MoisturePage> {
                   itemCount: moistures.length,
                   itemBuilder: ((context, index) {
                     final moisture = moistures[index];
-                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']));
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']).toLocal());
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
