@@ -11,7 +11,7 @@ class TemperaturePage extends StatefulWidget {
 }
 
 class _TemperaturePageState extends State<TemperaturePage> {
-  final _temphumid = Supabase.instance.client.from('TempHumidLevel').select().order('id', ascending: false).limit(15);
+  final _temphumid = Supabase.instance.client.from('TempHumidLevel').select().order('id', ascending: false).limit(20);
 
   @override
   Widget build(BuildContext context) {

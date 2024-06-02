@@ -11,7 +11,7 @@ class MoisturePage extends StatefulWidget {
 }
 
 class _MoisturePageState extends State<MoisturePage> {
-  final _moistures = Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false).limit(15);
+  final _moistures = Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false).limit(20);
 
   @override
   Widget build(BuildContext context) {

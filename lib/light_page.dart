@@ -11,7 +11,7 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false).limit(15);
+  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false).limit(20);
 
   @override
   Widget build(BuildContext context) {
