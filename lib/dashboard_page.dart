@@ -49,15 +49,6 @@ class _DashboardPageState extends State<DashboardPage> {
           final temperature = data[2].isNotEmpty ? data[2][0] : {'Tlevel': 0};
           final humidity = data[2].isNotEmpty ? data[2][0] : {'Hlevel': 0};
 
-
-          // print('==================================================================================');
-          // print('====================================Debug Session=================================');
-          // print('==================================================================================');
-          // print(moisture['created_at']);
-          // print(DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']).toLocal()));
-          // print('==================================================================================');
-          // print('==================================================================================');
-
           return Center(
             child: Container(
               width: double.infinity,

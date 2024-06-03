@@ -11,16 +11,26 @@ class TemperaturePage extends StatefulWidget {
 }
 
 class _TemperaturePageState extends State<TemperaturePage> {
-  final _temphumid = Supabase.instance.client.from('TempHumidLevel').select().order('id', ascending: false).limit(20);
+  final _temphumidStream = Supabase.instance.client
+      .from('TempHumidLevel')
+      .stream(primaryKey: ['id'])
+      .order('id', ascending: false)
+      .limit(20);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _temphumid,
+      body: StreamBuilder(
+        stream: _temphumidStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 6,
+                strokeAlign: 4,
+                color: Colors.green,
+              ),
+            );
           }
           final data = snapshot.data!;
 
@@ -43,7 +53,8 @@ class _TemperaturePageState extends State<TemperaturePage> {
                     final item = data[index];
                     final temperatureLevel = item['Tlevel'];
                     final humidityLevel = item['Hlevel'];
-                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(item['created_at']).toLocal());
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(item['created_at']).toLocal());
 
                     IconData iconData;
                     Color iconColor;

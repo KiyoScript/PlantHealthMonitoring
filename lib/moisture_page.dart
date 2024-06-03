@@ -11,16 +11,26 @@ class MoisturePage extends StatefulWidget {
 }
 
 class _MoisturePageState extends State<MoisturePage> {
-  final _moistures = Supabase.instance.client.from('MoistureLevel').select().order('id', ascending: false).limit(20);
+  final _moisturesStream = Supabase.instance.client
+      .from('MoistureLevel')
+      .stream(primaryKey: ['id'])
+      .order('id', ascending: false)
+      .limit(20);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _moistures,
+      body: StreamBuilder(
+        stream: _moisturesStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 6,
+                strokeAlign: 4,
+                color: Colors.green,
+              ),
+            );
           }
           final moistures = snapshot.data!;
 

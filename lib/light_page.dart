@@ -11,16 +11,26 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  final _lights = Supabase.instance.client.from('LightLevel').select().order('id', ascending: false).limit(20);
+  final _lightsStream = Supabase.instance.client
+      .from('LightLevel')
+      .stream(primaryKey: ['id'])
+      .order('id', ascending: false)
+      .limit(20);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _lights,
+      body: StreamBuilder(
+        stream: _lightsStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 6,
+                strokeAlign: 4,
+                color: Colors.green,
+              ),
+            );
           }
           final lights = snapshot.data!;
 
@@ -42,8 +52,8 @@ class _LightPageState extends State<LightPage> {
                   itemBuilder: ((context, index) {
                     final light = lights[index];
                     final lightLevel = light['Llevel'];
-                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']).toLocal());
-
+                    String formattedDateTime = DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(light['created_at']).toLocal());
 
                     IconData iconData;
                     Color iconColor;
