@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,11 +12,34 @@ class TemperaturePage extends StatefulWidget {
 }
 
 class _TemperaturePageState extends State<TemperaturePage> {
-  final _temphumidStream = Supabase.instance.client
+  late Timer _timer;
+  late Stream<List<dynamic>> _temphumidStream;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _temphumidStream = _fetchTemphumid();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _temphumidStream = _fetchTemphumid();
+      });
+    });
+  }
+
+  @override
+  void dispose(){
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Stream<List<dynamic>> _fetchTemphumid() {
+    return Supabase.instance.client
       .from('TempHumidLevel')
       .stream(primaryKey: ['id'])
       .order('id', ascending: false)
       .limit(20);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +84,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
                     Color iconColor;
                     String title;
 
-                    if (temperatureLevel < 15.0) {
+                    if (temperatureLevel < 20.0) {
                       iconData = Icons.ac_unit;
                       iconColor = Colors.blue;
                       title = 'Low Temperature';

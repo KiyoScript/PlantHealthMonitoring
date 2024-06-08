@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,11 +12,33 @@ class MoisturePage extends StatefulWidget {
 }
 
 class _MoisturePageState extends State<MoisturePage> {
-  final _moisturesStream = Supabase.instance.client
+  late Timer _timer;
+  late Stream<List<dynamic>> _moisturesStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _moisturesStream = _fetchMoistures();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _moisturesStream = _fetchMoistures();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Stream<List<dynamic>> _fetchMoistures() {
+    return Supabase.instance.client
       .from('MoistureLevel')
       .stream(primaryKey: ['id'])
       .order('id', ascending: false)
       .limit(20);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +94,18 @@ class _MoisturePageState extends State<MoisturePage> {
                               ],
                             ),
                             child: ListTile(
-                              title: Text(
-                                moisture['Mlevel'] < 30.0 ? 'Low Moisture Level' : 'Moisture Level',
+                              title: Text( moisture['Mlevel'] < 30.0 ? 'Low Moisture Level' : 'Moisture Level',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
+                                  color: moisture['Mlevel'] < 50.0
+                                      ? Colors.red
+                                      : Colors.green,
                                 ),
                               ),
                               subtitle: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     '${moisture['Mlevel']}%',
@@ -100,8 +125,12 @@ class _MoisturePageState extends State<MoisturePage> {
                                 ],
                               ),
                               leading: Icon(
-                                moisture['Mlevel'] < 30.0 ? Icons.warning : Icons.water_drop,
-                                color: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
+                                moisture['Mlevel'] < 30.0
+                                    ? Icons.warning
+                                    : Icons.water_drop,
+                                color: moisture['Mlevel'] < 50.0
+                                    ? Colors.red
+                                    : Colors.green,
                               ),
                             ),
                           ),

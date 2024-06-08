@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,11 +12,33 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  final _lightsStream = Supabase.instance.client
+  late Timer _timer;
+  late Stream<List<dynamic>> _lightsStream;
+
+  @override
+  void initState(){
+    super.initState();
+    _lightsStream = _fetchLights();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _lightsStream = _fetchLights();
+      });
+    });
+  }
+
+  @override
+  void dispose(){
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Stream<List<dynamic>> _fetchLights() {
+    return Supabase.instance.client
       .from('LightLevel')
       .stream(primaryKey: ['id'])
       .order('id', ascending: false)
       .limit(20);
+  }
 
   @override
   Widget build(BuildContext context) {

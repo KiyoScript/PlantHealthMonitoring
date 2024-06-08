@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,6 +13,26 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  late Timer _timer;
+  late Future<List<dynamic>> _futureData;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureData = _fetchData();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _futureData = _fetchData();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   Future<List<dynamic>> _fetchData() async {
     final moisture = await Supabase.instance.client
         .from('MoistureLevel')
@@ -38,10 +59,14 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _fetchData(),
+        future: _futureData,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 6, strokeAlign:4, color: Colors.green ));
+            return const Center(
+                child: CircularProgressIndicator(
+                    strokeWidth: 6,
+                    strokeAlign: 4,
+                    color: Colors.green));
           }
           final data = snapshot.data!;
           final moisture = data[0].isNotEmpty ? data[0][0] : {'Mlevel': 0};
@@ -67,30 +92,40 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   _buildContainer(
                     title: 'Moisture Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(moisture['created_at']).toLocal()),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(moisture['created_at']).toLocal()),
                     value: '${moisture['Mlevel']}%',
-                    valueColor: moisture['Mlevel'] < 50.0 ? Colors.red : Colors.green,
+                    valueColor: moisture['Mlevel'] < 50.0
+                        ? Colors.red
+                        : Colors.green,
                     circularValue: moisture['Mlevel'] / 100.0,
                   ),
                   _buildContainer(
                     title: 'Light Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(light['created_at']).toLocal()),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(light['created_at']).toLocal()),
                     value: '${light['Llevel']} lx',
-                    valueColor: light['Llevel'] < 300 ? Colors.red : Colors.green,
+                    valueColor:
+                        light['Llevel'] < 300 ? Colors.red : Colors.green,
                     circularValue: light['Llevel'] / 1000.0,
                   ),
                   _buildContainer(
                     title: 'Temperature Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(temperature['created_at']).toLocal()),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(temperature['created_at'])
+                            .toLocal()),
                     value: '${temperature['Tlevel']}°C',
-                    valueColor: temperature['Tlevel'] < 30 ? Colors.blue : Colors.red,
-                    circularValue: temperature['Tlevel'] / 100.0,
+                    valueColor:
+                        temperature['Tlevel'] < 30 ? Colors.blue : Colors.red,
+                    circularValue: 0.0, // Not used for temperature
                   ),
                   _buildContainer(
                     title: 'Humidity Level',
-                    time: DateFormat('MMM dd, yyyy (hh:mm a)').format(DateTime.parse(humidity['created_at']).toLocal()),
+                    time: DateFormat('MMM dd, yyyy (hh:mm a)')
+                        .format(DateTime.parse(humidity['created_at']).toLocal()),
                     value: '${humidity['Hlevel']}%',
-                    valueColor: humidity['Hlevel'] < 50 ? Colors.red : Colors.green,
+                    valueColor:
+                        humidity['Hlevel'] < 50 ? Colors.red : Colors.green,
                     circularValue: humidity['Hlevel'] / 100.0,
                   ),
                 ],
@@ -102,7 +137,12 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildContainer({required String title,required String time, required String value, required Color valueColor, required double circularValue}) {
+  Widget _buildContainer(
+      {required String title,
+      required String time,
+      required String value,
+      required Color valueColor,
+      required double circularValue}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -129,31 +169,59 @@ class _DashboardPageState extends State<DashboardPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 5),
-          Expanded(
-            child: SizedBox(
-              width: 80,
-              height: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.bottomCenter,
-                children: [
-                  CircularProgressIndicator(
-                    value: circularValue,
-                    valueColor: AlwaysStoppedAnimation<Color>(valueColor),
-                    backgroundColor: const Color.fromARGB(255, 189, 234, 191),
-                    strokeWidth: 10,
-                    strokeCap: StrokeCap.round,
-                  ),
-                  Center(
-                    child: Text(
+          if (title == 'Temperature Level')
+            Expanded(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                       value,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: valueColor),
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: valueColor),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Icon(
+                      Icons.thermostat,
+                      size: 40,
+                      color: valueColor,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: SizedBox(
+                width: 80,
+                height: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    CircularProgressIndicator(
+                      value: circularValue,
+                      valueColor: AlwaysStoppedAnimation<Color>(valueColor),
+                      backgroundColor:
+                          const Color.fromARGB(255, 189, 234, 191),
+                      strokeWidth: 10,
+                      strokeCap: StrokeCap.round,
+                    ),
+                    Center(
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: valueColor),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           const SizedBox(height: 5),
           Text(
             time,
